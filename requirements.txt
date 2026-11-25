@@ -1,0 +1,9 @@
+# Accreditation Research Agent — Python 3.11+ (tested on 3.14). Pinned = tested versions.
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+pydantic>=2.7,<3
+httpx==0.28.1
+pymupdf==2.1
+rapidfuzz==3.14.6
+playwright==1.65.2        # drives the installed Google Chrome (or Playwright's Chromium) for screenshots + PDF
+openai==3.57.0            # name resolution only (Responses API + web_search)

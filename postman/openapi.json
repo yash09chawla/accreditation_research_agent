@@ -1,0 +1,865 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Accreditation Research Agent",
+        "description": "Finds whether an Indian university / institute is listed by UGC or AICTE and returns the result with a hyperlinked proof PDF.",
+        "version": "1.1.2"
+    },
+    "paths": {
+        "/health": {
+            "get": {
+                "summary": "Health",
+                "operationId": "health_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/accreditation/research": {
+            "post": {
+                "summary": "Research",
+                "operationId": "research_v1_accreditation_research_post",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Api Key"
+                        }
+                    },
+                    {
+                        "name": "x-api-key",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Api-Key"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResearchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unprocessable Content"
+                    },
+                    "503": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Service Unavailable"
+                    },
+                    "504": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Gateway Timeout"
+                    }
+                }
+            }
+        },
+        "/v1/reports/{rid}": {
+            "get": {
+                "summary": "Report",
+                "operationId": "report_v1_reports__rid__get",
+                "parameters": [
+                    {
+                        "name": "rid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Rid"
+                        }
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Api Key"
+                        }
+                    },
+                    {
+                        "name": "x-api-key",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Api-Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/{rid}/proof.pdf": {
+            "get": {
+                "summary": "Proof",
+                "operationId": "proof_v1_reports__rid__proof_pdf_get",
+                "parameters": [
+                    {
+                        "name": "rid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Rid"
+                        }
+                    },
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Api Key"
+                        }
+                    },
+                    {
+                        "name": "x-api-key",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Api-Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sources": {
+            "get": {
+                "summary": "Sources",
+                "operationId": "sources_v1_sources_get",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Api Key"
+                        }
+                    },
+                    {
+                        "name": "x-api-key",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Api-Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/sources/refresh": {
+            "post": {
+                "summary": "Refresh",
+                "operationId": "refresh_v1_sources_refresh_post",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Api Key"
+                        }
+                    },
+                    {
+                        "name": "x-api-key",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "X-Api-Key"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorResponse": {
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "title": "Error"
+                    },
+                    "detail": {
+                        "type": "string",
+                        "title": "Detail"
+                    },
+                    "request_id": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Request Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "error",
+                    "detail"
+                ],
+                "title": "ErrorResponse"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "MatchedInstitution": {
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "enum": [
+                            "UGC",
+                            "AICTE"
+                        ],
+                        "title": "Body"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "category": {
+                        "type": "string",
+                        "title": "Category"
+                    },
+                    "state": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "State"
+                    },
+                    "details": {
+                        "additionalProperties": true,
+                        "type": "object",
+                        "title": "Details",
+                        "default": {}
+                    },
+                    "match_score": {
+                        "type": "number",
+                        "title": "Match Score"
+                    },
+                    "match_method": {
+                        "type": "string",
+                        "title": "Match Method"
+                    },
+                    "matched_on": {
+                        "type": "string",
+                        "title": "Matched On"
+                    },
+                    "state_check": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "State Check"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "body",
+                    "name",
+                    "category",
+                    "match_score",
+                    "match_method",
+                    "matched_on"
+                ],
+                "title": "MatchedInstitution"
+            },
+            "Proof": {
+                "properties": {
+                    "filename": {
+                        "type": "string",
+                        "title": "Filename"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url"
+                    },
+                    "path": {
+                        "type": "string",
+                        "title": "Path"
+                    },
+                    "sha256": {
+                        "type": "string",
+                        "title": "Sha256"
+                    },
+                    "size_bytes": {
+                        "type": "integer",
+                        "title": "Size Bytes"
+                    },
+                    "pages": {
+                        "type": "integer",
+                        "title": "Pages"
+                    },
+                    "base64": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Base64"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "filename",
+                    "url",
+                    "path",
+                    "sha256",
+                    "size_bytes",
+                    "pages"
+                ],
+                "title": "Proof"
+            },
+            "ResearchRequest": {
+                "properties": {
+                    "university_name": {
+                        "type": "string",
+                        "maxLength": 300,
+                        "minLength": 2,
+                        "title": "University Name",
+                        "description": "Awarding university (mandatory). Abbreviations such as VTU are accepted."
+                    },
+                    "institute_name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 300
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Institute Name",
+                        "description": "Affiliated college / institute, if any."
+                    },
+                    "degree": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Degree",
+                        "description": "Programme, e.g. 'B.E. Civil Engineering' \u2014 decides AICTE vs UGC first."
+                    },
+                    "state": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 80
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "State",
+                        "description": "Indian state / UT \u2014 disambiguates same names."
+                    },
+                    "include_pdf_base64": {
+                        "type": "boolean",
+                        "title": "Include Pdf Base64",
+                        "description": "Also return the proof PDF inline as base64.",
+                        "default": false
+                    }
+                },
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                    "university_name"
+                ],
+                "title": "ResearchRequest"
+            },
+            "ResearchResponse": {
+                "properties": {
+                    "request_id": {
+                        "type": "string",
+                        "title": "Request Id"
+                    },
+                    "accreditation_status": {
+                        "type": "string",
+                        "enum": [
+                            "Accredited",
+                            "Non-Accredited"
+                        ],
+                        "title": "Accreditation Status"
+                    },
+                    "accredited": {
+                        "type": "boolean",
+                        "title": "Accredited"
+                    },
+                    "accreditation_body": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "UGC",
+                                    "AICTE"
+                                ]
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Accreditation Body"
+                    },
+                    "accreditation_body_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Accreditation Body Name"
+                    },
+                    "accreditation_url": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Accreditation Url"
+                    },
+                    "country": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Country"
+                    },
+                    "accreditation_proof": {
+                        "$ref": "#/components/schemas/Proof"
+                    },
+                    "accreditation_citations": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Accreditation Citations",
+                        "default": []
+                    },
+                    "matched_institution": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MatchedInstitution"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "other_listings": {
+                        "items": {
+                            "$ref": "#/components/schemas/MatchedInstitution"
+                        },
+                        "type": "array",
+                        "title": "Other Listings",
+                        "default": []
+                    },
+                    "alternatives": {
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "type": "array",
+                        "title": "Alternatives",
+                        "default": []
+                    },
+                    "routing": {
+                        "additionalProperties": true,
+                        "type": "object",
+                        "title": "Routing"
+                    },
+                    "sources_checked": {
+                        "items": {
+                            "$ref": "#/components/schemas/SourceChecked"
+                        },
+                        "type": "array",
+                        "title": "Sources Checked"
+                    },
+                    "name_resolution": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name Resolution"
+                    },
+                    "warnings": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array",
+                        "title": "Warnings",
+                        "default": []
+                    },
+                    "query": {
+                        "additionalProperties": true,
+                        "type": "object",
+                        "title": "Query"
+                    },
+                    "researched_at": {
+                        "type": "string",
+                        "title": "Researched At"
+                    },
+                    "duration_seconds": {
+                        "type": "number",
+                        "title": "Duration Seconds"
+                    },
+                    "cost_usd": {
+                        "type": "number",
+                        "title": "Cost Usd"
+                    },
+                    "engine_version": {
+                        "type": "string",
+                        "title": "Engine Version"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "request_id",
+                    "accreditation_status",
+                    "accredited",
+                    "accreditation_proof",
+                    "routing",
+                    "sources_checked",
+                    "query",
+                    "researched_at",
+                    "duration_seconds",
+                    "cost_usd",
+                    "engine_version"
+                ],
+                "title": "ResearchResponse"
+            },
+            "SourceChecked": {
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "enum": [
+                            "UGC",
+                            "AICTE"
+                        ],
+                        "title": "Body"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "url": {
+                        "type": "string",
+                        "title": "Url"
+                    },
+                    "found": {
+                        "type": "boolean",
+                        "title": "Found"
+                    },
+                    "result": {
+                        "type": "string",
+                        "title": "Result"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "body",
+                    "name",
+                    "url",
+                    "found",
+                    "result"
+                ],
+                "title": "SourceChecked"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}

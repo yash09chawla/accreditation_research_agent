@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accreditation Research Agent — test console</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1f2328; --mute:#667085; --line:#e4e7ec; --pri:#1f3a68;
+          --ok:#15803d; --okbg:#ecfdf3; --no:#b91c1c; --nobg:#fef3f2; --warn:#b54708; --warnbg:#fffaeb; }
+  * { box-sizing:border-box }
+  body { margin:0; font:14px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color:var(--ink); background:var(--bg) }
+  header { background:var(--pri); color:#fff; padding:14px 24px; display:flex; justify-content:space-between; align-items:center }
+  header h1 { font-size:17px; margin:0; font-weight:600 }
+  header .st { font-size:12px; opacity:.9 }
+  main { max-width:1180px; margin:20px auto; padding:0 16px; display:grid; grid-template-columns:360px 1fr; gap:18px }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px }
+  label { display:block; font-size:12px; font-weight:600; color:var(--mute); margin:12px 0 4px }
+  label .req { color:var(--no) }
+  input { width:100%; padding:9px 10px; border:1px solid #d0d5dd; border-radius:7px; font:inherit }
+  input:focus { outline:2px solid #84adff; border-color:#84adff }
+  button { margin-top:16px; width:100%; padding:10px; border:0; border-radius:7px; background:var(--pri); color:#fff; font:600 14px inherit; cursor:pointer }
+  button:disabled { opacity:.6; cursor:wait }
+  .hint { font-size:11.5px; color:var(--mute); margin-top:4px }
+  .examples { margin-top:14px; font-size:12px; color:var(--mute) }
+  .examples a { color:var(--pri); cursor:pointer; text-decoration:underline; margin-right:8px; white-space:nowrap }
+  .empty { color:var(--mute); text-align:center; padding:60px 10px }
+  .badge { display:inline-block; font-weight:700; font-size:15px; padding:6px 14px; border-radius:7px }
+  .badge.ok { background:var(--okbg); color:var(--ok); border:1px solid #abefc6 }
+  .badge.no { background:var(--nobg); color:var(--no); border:1px solid #fecdca }
+  table { border-collapse:collapse; width:100%; margin-top:12px }
+  td, th { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; vertical-align:top; font-size:13px }
+  td:first-child { width:190px; color:var(--mute); font-weight:600 }
+  a { color:#0b57d0; word-break:break-all }
+  .warn { background:var(--warnbg); border:1px solid #fedf89; color:var(--warn); border-radius:7px; padding:8px 10px; margin-top:12px; font-size:12.5px }
+  .err { background:var(--nobg); border:1px solid #fecdca; color:var(--no); border-radius:7px; padding:10px; font-size:13px }
+  h3 { font-size:13px; margin:18px 0 4px; color:var(--mute); text-transform:uppercase; letter-spacing:.03em }
+  .src td:first-child { width:auto }
+  .y { color:var(--ok); font-weight:600 } .n { color:var(--no) }
+  iframe { width:100%; height:720px; border:1px solid var(--line); border-radius:8px; margin-top:10px }
+  details { margin-top:12px } summary { cursor:pointer; color:var(--mute); font-size:12.5px }
+  pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:8px; overflow:auto; font-size:11.5px; max-height:420px }
+  .spin { display:inline-block; width:14px; height:14px; border:2px solid #fff; border-right-color:transparent; border-radius:50%; animation:r .8s linear infinite; vertical-align:-2px; margin-right:6px }
+  @keyframes r { to { transform:rotate(360deg) } }
+  @media (max-width:900px) { main { grid-template-columns:1fr } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Accreditation Research Agent <span style="opacity:.7;font-weight:400">· test console</span></h1>
+  <span class="st" id="health">checking…</span>
+</header>
+<main>
+  <section class="card">
+    <form id="f" autocomplete="off">
+      <label for="university_name">University name <span class="req">*</span></label>
+      <input id="university_name" required minlength="2" placeholder="e.g. Anna University">
+      <label for="institute_name">Institute / college name</label>
+      <input id="institute_name" placeholder="optional">
+      <label for="degree">Degree</label>
+      <input id="degree" placeholder="optional, e.g. B.E. Civil Engineering">
+      <div class="hint">Technical/professional degrees (B.E., B.Tech, MBA, MCA, B.Pharm…) are checked against AICTE first.</div>
+      <label for="state">State</label>
+      <input id="state" list="states" placeholder="optional, e.g. Tamil Nadu">
+      <datalist id="states"></datalist>
+      <label for="key">API key</label>
+      <input id="key" placeholder="only if the server sets ARA_API_KEYS">
+      <button id="go" type="submit">Research accreditation</button>
+    </form>
+    <div class="examples">Try:
+      <a data-u="Anna University" data-d="B.E. Civil Engineering" data-s="Tamil Nadu">Anna University (B.E.)</a>
+      <a data-u="IGNOU">IGNOU</a>
+      <a data-u="Amity University" data-s="Rajasthan">Amity University, Rajasthan</a>
+      <a data-u="Visvesvaraya Technological University" data-i="RV College of Engineering" data-d="B.E." data-s="Karnataka">VTU + RVCE</a>
+      <a data-u="Oxford Global University of Excellence">Unknown university</a>
+    </div>
+  </section>
+  <section class="card" id="out"><div class="empty">Enter a university name and run the research.<br>The result, the proof PDF and the raw API response appear here.</div></section>
+</main>
+<script>
+const STATES = ["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh",
+  "Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab",
+  "Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Andaman and Nicobar Islands",
+  "Chandigarh","Dadra and Nagar Haveli and Daman and Diu","Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"];
+document.getElementById("states").innerHTML = STATES.map(s => `<option value="${s}">`).join("");
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const link = u => u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a>` : "—";
+$("key").value = localStorage.getItem("ara_key") || "";
+
+fetch("/health").then(r => r.json()).then(h => {
+  $("health").textContent = `v${h.engine_version} · sources ${h.ready ? "ready" : "loading…"} · OpenAI ${h.llm ? "on" : "off"}`;
+}).catch(() => $("health").textContent = "server not reachable");
+
+document.querySelectorAll(".examples a").forEach(a => a.onclick = () => {
+  $("university_name").value = a.dataset.u || ""; $("institute_name").value = a.dataset.i || "";
+  $("degree").value = a.dataset.d || ""; $("state").value = a.dataset.s || "";
+});
+
+$("f").onsubmit = async ev => {
+  ev.preventDefault();
+  const body = { university_name: $("university_name").value.trim() };
+  for (const k of ["institute_name", "degree", "state"]) if ($(k).value.trim()) body[k] = $(k).value.trim();
+  const key = $("key").value.trim(); localStorage.setItem("ara_key", key);
+  const headers = { "Content-Type": "application/json" }; if (key) headers["X-API-Key"] = key;
+  $("go").disabled = true; $("go").innerHTML = '<span class="spin"></span>Researching UGC + AICTE…';
+  $("out").innerHTML = '<div class="empty">Searching the official lists and capturing evidence — usually 5–30 s.</div>';
+  const t0 = performance.now();
+  try {
+    const r = await fetch("/v1/accreditation/research", { method: "POST", headers, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(`${r.status} ${j.error || ""}: ${j.detail || JSON.stringify(j)}`);
+    render(j, (performance.now() - t0) / 1000);
+  } catch (e) {
+    $("out").innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  } finally {
+    $("go").disabled = false; $("go").textContent = "Research accreditation";
+  }
+};
+
+function render(j, secs) {
+  const ok = j.accredited, m = j.matched_institution;
+  const key = $("key").value.trim();
+  const pdf = j.accreditation_proof.url + (key ? "?api_key=" + encodeURIComponent(key) : "");
+  let h = `<span class="badge ${ok ? "ok" : "no"}">${esc(j.accreditation_status)}</span>
+    <table>
+      <tr><td>Accreditation body</td><td>${j.accreditation_body ? esc(j.accreditation_body + " — " + j.accreditation_body_name) : "—"}</td></tr>
+      <tr><td>Official URL</td><td>${link(j.accreditation_url)}</td></tr>
+      <tr><td>Country</td><td>${esc(j.country || "—")}</td></tr>
+      <tr><td>Accreditation proof</td><td><a href="${esc(pdf)}" target="_blank">${esc(j.accreditation_proof.filename)}</a>
+        <span style="color:#667085"> · ${j.accreditation_proof.pages} page(s) · ${(j.accreditation_proof.size_bytes/1024).toFixed(0)} KB</span></td></tr>
+      ${(j.accreditation_citations || []).length ? `<tr><td>Citations</td><td>${j.accreditation_citations.map(c =>
+          `${esc(c.title)}<br>${link(c.url)}`).join("<br>")}</td></tr>` : ""}
+      ${m && m.details && m.details.approval_group ? `<tr><td>AICTE approval group</td><td>${esc(m.details.approval_group.group)} —
+          ${esc(m.details.approval_group.description)} <span style="color:#667085">(${esc(m.details.approval_group.region)}:
+          ${esc(m.details.approval_group.region_states)})</span></td></tr>` : ""}
+      ${m ? `<tr><td>Name in official list</td><td>${esc(m.name)} <span style="color:#667085">(${esc(m.category)}${m.state ? ", " + esc(m.state) : ""})</span></td></tr>
+      <tr><td>Match</td><td>${esc(m.match_method)} · ${m.match_score}% · on “${esc(m.matched_on)}”${m.state_check === false ? " · <b>state differs</b>" : ""}</td></tr>` : ""}
+      <tr><td>Routing</td><td>${esc(j.routing.order.join(" → "))} <span style="color:#667085">— ${esc(j.routing.reason)}</span></td></tr>
+      <tr><td>Request</td><td>${esc(j.request_id)} · ${j.duration_seconds}s engine · ${secs.toFixed(1)}s total · $${j.cost_usd}</td></tr>
+    </table>`;
+  if (j.warnings.length) h += `<div class="warn"><b>Warnings</b><br>${j.warnings.map(esc).join("<br>")}</div>`;
+  if (j.other_listings.length) h += `<h3>Also listed</h3><table>${j.other_listings.map(o =>
+      `<tr><td>${esc(o.body)}</td><td>${esc(o.name)} (${esc(o.category)}${o.state ? ", " + esc(o.state) : ""})</td></tr>`).join("")}</table>`;
+  if (j.alternatives.length) h += `<h3>Other records with the same name</h3><table>${j.alternatives.map(o =>
+      `<tr><td>${esc(o.body)}</td><td>${esc(o.name)} — ${esc(o.state || "")}</td></tr>`).join("")}</table>`;
+  h += `<h3>Sources checked</h3><table class="src">${j.sources_checked.map(s =>
+      `<tr><td>${esc(s.name)}<br>${link(s.url)}</td><td class="${s.found ? "y" : "n"}">${esc(s.result)}</td></tr>`).join("")}</table>`;
+  if (j.name_resolution && j.name_resolution.used) h += `<h3>OpenAI name resolution${j.name_resolution.cached ? " (cached)" : ""}</h3>
+      <div style="font-size:12.5px">${esc((j.name_resolution.university_names || []).join(" · ") || "—")}
+      ${j.name_resolution.notes ? `<br><span style="color:#667085">${esc(j.name_resolution.notes)}</span>` : ""}</div>`;
+  h += `<h3>Proof PDF</h3><iframe src="${esc(pdf)}"></iframe>
+    <details><summary>Raw API response</summary><pre>${esc(JSON.stringify(j, null, 2))}</pre></details>`;
+  $("out").innerHTML = h;
+}
+</script>
+</body>
+</html>

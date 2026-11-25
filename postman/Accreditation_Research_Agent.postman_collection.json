@@ -1,0 +1,1055 @@
+{
+  "info": {
+    "_postman_id": "f2f7f1ff-7239-43d6-bbac-f6e6badd4b8b",
+    "name": "Accreditation Research Agent API",
+    "description": "UGC / AICTE accreditation research engine (v1.1.2).\n\nInput: `university_name` (mandatory) + optional `institute_name`, `degree`, `state`.\nOutput: Accredited / Non-Accredited, accreditation proof (PDF), body (UGC/AICTE), URL, country.\n\nSet `baseUrl` (default http://127.0.0.1:8100). `apiKey` is only needed when the server sets `ARA_API_KEYS`. Run a research request first: it stores `requestId` for the report/PDF requests.\n\nFull contract: status/api.md · Swagger: {{baseUrl}}/docs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8100"
+    },
+    {
+      "key": "apiKey",
+      "value": ""
+    },
+    {
+      "key": "requestId",
+      "value": "ara_20261125_120505_c7850b"
+    }
+  ],
+  "item": [
+    {
+      "name": "Research",
+      "description": "POST /v1/accreditation/research — one call returns the full result (≈10–30 s).",
+      "item": [
+        {
+          "name": "University only (UGC)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"IGNOU\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Only the mandatory field. Abbreviations are accepted."
+          },
+          "response": [
+            {
+              "name": "200 — Accredited by UGC",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/accreditation/research",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "accreditation",
+                    "research"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"university_name\": \"IGNOU\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Only the mandatory field. Abbreviations are accepted."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"ara_20261125_120505_a6569a\",\n  \"accreditation_status\": \"Accredited\",\n  \"accredited\": true,\n  \"accreditation_body\": \"UGC\",\n  \"accreditation_body_name\": \"University Grants Commission\",\n  \"accreditation_url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\",\n  \"country\": \"India\",\n  \"accreditation_proof\": {\n    \"filename\": \"Accreditation - IGNOU.pdf\",\n    \"url\": \"{{baseUrl}}/v1/reports/ara_20261125_120505_a6569a/proof.pdf\",\n    \"path\": \"<ARA_DATA_DIR>/reports/ara_20261125_120505_a6569a/Accreditation - IGNOU.pdf\",\n    \"sha256\": \"1233926e9c70aabd38c0c734a36c8edb1b00d2f37d0f165288c4e6425e0ad019\",\n    \"size_bytes\": 357614,\n    \"pages\": 2,\n    \"base64\": null\n  },\n  \"accreditation_citations\": [\n    {\n      \"title\": \"UGC — List of Central Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\"\n    }\n  ],\n  \"matched_institution\": {\n    \"body\": \"UGC\",\n    \"name\": \"Indira Gandhi National Open University\",\n    \"category\": \"Central University\",\n    \"state\": \"Delhi\",\n    \"details\": {\n      \"ugc_status\": \"2(f) & 12B\",\n      \"website\": \"http://www.ignou.ac.in\",\n      \"address\": \"Maidan Garhi,New Delhi\",\n      \"pin\": \"110068\"\n    },\n    \"match_score\": 100.0,\n    \"match_method\": \"exact\",\n    \"matched_on\": \"IGNOU\",\n    \"state_check\": null\n  },\n  \"other_listings\": [],\n  \"alternatives\": [],\n  \"routing\": {\n    \"order\": [\n      \"UGC\",\n      \"AICTE\"\n    ],\n    \"technical\": false,\n    \"reason\": \"university name only — UGC lists universities; AICTE also checked\"\n  },\n  \"sources_checked\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Central Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\",\n      \"found\": true,\n      \"result\": \"Listed: Indira Gandhi National Open University (Delhi)\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=LZ1FUMk6U2JWGNLvhWfVSA==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Private Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=0wBmFB1Rb4JGVzq9UP/iOg==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Deemed to be Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=UCL6fMspL2LJS89kv++N3A==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    }\n  ],\n  \"name_resolution\": null,\n  \"warnings\": [],\n  \"query\": {\n    \"university_name\": \"IGNOU\",\n    \"institute_name\": null,\n    \"degree\": null,\n    \"state\": null\n  },\n  \"researched_at\": \"2026-11-25T12:05:05+05:30\",\n  \"duration_seconds\": 12.74,\n  \"cost_usd\": 0.0,\n  \"engine_version\": \"1.1.0\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Technical degree (AICTE first)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"Anna University\",\n  \"degree\": \"B.E. Civil Engineering\",\n  \"state\": \"Tamil Nadu\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Technical/professional degree → AICTE is targeted first; the AICTE Public Notice group is cited."
+          },
+          "response": [
+            {
+              "name": "200 — Accredited by AICTE (Group-2)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/accreditation/research",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "accreditation",
+                    "research"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"university_name\": \"Anna University\",\n  \"degree\": \"B.E. Civil Engineering\",\n  \"state\": \"Tamil Nadu\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Technical/professional degree → AICTE is targeted first; the AICTE Public Notice group is cited."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"ara_20261125_120505_c7850b\",\n  \"accreditation_status\": \"Accredited\",\n  \"accredited\": true,\n  \"accreditation_body\": \"AICTE\",\n  \"accreditation_body_name\": \"All India Council for Technical Education\",\n  \"accreditation_url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n  \"country\": \"India\",\n  \"accreditation_proof\": {\n    \"filename\": \"Accreditation - Anna University.pdf\",\n    \"url\": \"{{baseUrl}}/v1/reports/ara_20261125_120505_c7850b/proof.pdf\",\n    \"path\": \"<ARA_DATA_DIR>/reports/ara_20261125_120505_c7850b/Accreditation - Anna University.pdf\",\n    \"sha256\": \"7f2c90f04b82173d59a7bb832efb5dc6067f92ab4f2000a68e42d68862d8b803\",\n    \"size_bytes\": 2029423,\n    \"pages\": 4,\n    \"base64\": null\n  },\n  \"accreditation_citations\": [\n    {\n      \"title\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf#page=115\"\n    },\n    {\n      \"title\": \"AICTE — Public Notice 2025-26 (approval group Group-2)\",\n      \"url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\"\n    }\n  ],\n  \"matched_institution\": {\n    \"body\": \"AICTE\",\n    \"name\": \"ANNA UNIVERSITY\",\n    \"category\": \"AICTE approved institution\",\n    \"state\": \"Tamil Nadu\",\n    \"details\": {\n      \"sr\": \"5427\",\n      \"aicte_id\": \"1-3687844468\",\n      \"name\": \"ANNA UNIVERSITY\",\n      \"region\": \"Southern\",\n      \"state\": \"Tamil Nadu\",\n      \"district\": \"CHENNAI\",\n      \"city\": \"CITY\",\n      \"group\": \"Group-2\",\n      \"page\": 115,\n      \"approval_group\": {\n        \"group\": \"Group-2\",\n        \"description\": \"Existing institutions / universities running other than BBA / BCA / BMS\",\n        \"regions\": \"Western (WR), Southern (SR), South West (SWR) and South Central (SCR) regions\",\n        \"region\": \"Southern (SR)\",\n        \"region_states\": \"Tamil Nadu, Puducherry\",\n        \"notice_url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\"\n      }\n    },\n    \"match_score\": 100.0,\n    \"match_method\": \"exact\",\n    \"matched_on\": \"Anna University\",\n    \"state_check\": true\n  },\n  \"other_listings\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"Anna University\",\n      \"category\": \"State University\",\n      \"state\": \"Tamil Nadu\",\n      \"details\": {\n        \"ugc_status\": \"2(f) & 12B\",\n        \"website\": \"http://www.annauniv.edu\",\n        \"address\": \"Sardar Patel Road, Guindy, ChennaiGuindyChennai\",\n        \"pin\": \"600025\"\n      },\n      \"match_score\": 100.0,\n      \"match_method\": \"exact\",\n      \"matched_on\": \"Anna University\",\n      \"state_check\": true\n    }\n  ],\n  \"alternatives\": [],\n  \"routing\": {\n    \"order\": [\n      \"AICTE\",\n      \"UGC\"\n    ],\n    \"technical\": true,\n    \"reason\": \"degree 'B.E. Civil Engineering' is a technical/professional programme (B.E) — AICTE approves these programmes\"\n  },\n  \"sources_checked\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Central Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=LZ1FUMk6U2JWGNLvhWfVSA==\",\n      \"found\": true,\n      \"result\": \"Listed: Anna University (Tamil Nadu)\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Private Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=0wBmFB1Rb4JGVzq9UP/iOg==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Deemed to be Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=UCL6fMspL2LJS89kv++N3A==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n      \"found\": true,\n      \"result\": \"University: ANNA UNIVERSITY — Sr.No 5427, page 115\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Public Notice 2025-26 (approval groups)\",\n      \"url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\",\n      \"found\": true,\n      \"result\": \"Group-2: Existing institutions / universities running other than BBA / BCA / BMS — Western (WR), Southern (SR), South West (SWR) and South Central (SCR) regions\"\n    }\n  ],\n  \"name_resolution\": null,\n  \"warnings\": [],\n  \"query\": {\n    \"university_name\": \"Anna University\",\n    \"institute_name\": null,\n    \"degree\": \"B.E. Civil Engineering\",\n    \"state\": \"Tamil Nadu\"\n  },\n  \"researched_at\": \"2026-11-25T12:05:05+05:30\",\n  \"duration_seconds\": 14.41,\n  \"cost_usd\": 0.0,\n  \"engine_version\": \"1.1.0\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "University + institute + degree + state",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"VTU\",\n  \"institute_name\": \"R.V. College of Engineering\",\n  \"degree\": \"B.E. Computer Science\",\n  \"state\": \"Karnataka\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "All optional fields. The institute's AICTE row decides; the university's listings appear in `other_listings`."
+          },
+          "response": [
+            {
+              "name": "200 — Accredited by AICTE (institute)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/accreditation/research",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "accreditation",
+                    "research"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"university_name\": \"VTU\",\n  \"institute_name\": \"R.V. College of Engineering\",\n  \"degree\": \"B.E. Computer Science\",\n  \"state\": \"Karnataka\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "All optional fields. The institute's AICTE row decides; the university's listings appear in `other_listings`."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"ara_20261125_115025_6fb7e4\",\n  \"accreditation_status\": \"Accredited\",\n  \"accredited\": true,\n  \"accreditation_body\": \"AICTE\",\n  \"accreditation_body_name\": \"All India Council for Technical Education\",\n  \"accreditation_url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n  \"country\": \"India\",\n  \"accreditation_proof\": {\n    \"filename\": \"Accreditation - Gujarat Technological University.pdf\",\n    \"url\": \"{{baseUrl}}/v1/reports/ara_20261125_115025_6fb7e4/proof.pdf\",\n    \"path\": \"<ARA_DATA_DIR>/reports/ara_20261125_115025_6fb7e4/Accreditation - Gujarat Technological University.pdf\",\n    \"sha256\": \"2c433a28d813e080141d4c7a8c4d93df08f371c20c7c3df5309a90b2a9d711ae\",\n    \"size_bytes\": 1907562,\n    \"pages\": 4,\n    \"base64\": null\n  },\n  \"accreditation_citations\": [\n    {\n      \"title\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf#page=6\"\n    },\n    {\n      \"title\": \"AICTE — Public Notice 2025-26 (approval group Group-1)\",\n      \"url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\"\n    }\n  ],\n  \"matched_institution\": {\n    \"body\": \"AICTE\",\n    \"name\": \"L. D. COLLEGE OF ENGINEERING\",\n    \"category\": \"AICTE approved institution\",\n    \"state\": \"Gujarat\",\n    \"details\": {\n      \"sr\": \"260\",\n      \"aicte_id\": \"1-7916986\",\n      \"name\": \"L. D. COLLEGE OF ENGINEERING\",\n      \"region\": \"Central\",\n      \"state\": \"Gujarat\",\n      \"district\": \"AHMEDABAD\",\n      \"city\": \"AHMEDABAD\",\n      \"group\": \"Group-1\",\n      \"page\": 6,\n      \"approval_group\": {\n        \"group\": \"Group-1\",\n        \"description\": \"Existing institutions / universities running other than BBA / BCA / BMS\",\n        \"regions\": \"Central (CR), Eastern (ER), Northern (NR) and North West (NWR) regions\",\n        \"region\": \"Central (CR)\",\n        \"region_states\": \"Chhattisgarh, Gujarat, Madhya Pradesh\",\n        \"notice_url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\"\n      }\n    },\n    \"match_score\": 100.0,\n    \"match_method\": \"exact\",\n    \"matched_on\": \"L.D. College of Engineering\",\n    \"state_check\": true\n  },\n  \"other_listings\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"Gujarat Technological University\",\n      \"category\": \"State University\",\n      \"state\": \"Gujarat\",\n      \"details\": {\n        \"ugc_status\": \"2(f) & 12B\",\n        \"website\": \"http://www.gtu.ac.in\",\n        \"address\": \"Nr.Vishwakarma Government Engineering College Nr.Visat Three Roads, Visat - Gandhinagar Highway Chandkheda, Ahmedabad Nr.Visat Three Roads, Visat - Gandhinagar HighwayChandkheda, Ahmedabad\",\n        \"pin\": \"382424\"\n      },\n      \"match_score\": 100.0,\n      \"match_method\": \"exact\",\n      \"matched_on\": \"Gujarat Technological University\",\n      \"state_check\": true\n    }\n  ],\n  \"alternatives\": [],\n  \"routing\": {\n    \"order\": [\n      \"AICTE\",\n      \"UGC\"\n    ],\n    \"technical\": true,\n    \"reason\": \"degree 'B.E.' is a technical/professional programme (B.E) — AICTE approves these programmes\"\n  },\n  \"sources_checked\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Central Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=LZ1FUMk6U2JWGNLvhWfVSA==\",\n      \"found\": true,\n      \"result\": \"Listed: Gujarat Technological University (Gujarat)\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Private Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=0wBmFB1Rb4JGVzq9UP/iOg==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Deemed to be Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=UCL6fMspL2LJS89kv++N3A==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n      \"found\": true,\n      \"result\": \"Institute: L. D. COLLEGE OF ENGINEERING — Sr.No 260, page 6\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Public Notice 2025-26 (approval groups)\",\n      \"url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\",\n      \"found\": true,\n      \"result\": \"Group-1: Existing institutions / universities running other than BBA / BCA / BMS — Central (CR), Eastern (ER), Northern (NR) and North West (NWR) regions\"\n    }\n  ],\n  \"name_resolution\": null,\n  \"warnings\": [],\n  \"query\": {\n    \"university_name\": \"Gujarat Technological University\",\n    \"institute_name\": \"L.D. College of Engineering\",\n    \"degree\": \"B.E.\",\n    \"state\": \"Gujarat\"\n  },\n  \"researched_at\": \"2026-11-25T11:50:25+05:30\",\n  \"duration_seconds\": 8.9,\n  \"cost_usd\": 0.0,\n  \"engine_version\": \"1.1.0\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Same name in several states",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"Amity University\",\n  \"state\": \"Rajasthan\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "UGC lists 9 'Amity University' records; `state` picks the right one. Without it, `alternatives` and a warning are returned."
+          },
+          "response": []
+        },
+        {
+          "name": "Old / informal name (OpenAI name resolution)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"Nagpur University\",\n  \"degree\": \"B.Sc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "No direct match → OpenAI resolves the official name (Rashtrasant Tukadoji Maharaj Nagpur University), which is then matched against the official UGC list. `name_resolution` shows the step and cost."
+          },
+          "response": []
+        },
+        {
+          "name": "Not found (Non-Accredited)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"Oxford Global University of Excellence\",\n  \"degree\": \"B.Sc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Not in UGC or AICTE → Non-Accredited; body/url/country are null and the proof shows every source searched with no result."
+          },
+          "response": [
+            {
+              "name": "200 — Non-Accredited",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/accreditation/research",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "accreditation",
+                    "research"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"university_name\": \"Oxford Global University of Excellence\",\n  \"degree\": \"B.Sc\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Not in UGC or AICTE → Non-Accredited; body/url/country are null and the proof shows every source searched with no result."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"ara_20261125_121042_a34d08\",\n  \"accreditation_status\": \"Non-Accredited\",\n  \"accredited\": false,\n  \"accreditation_body\": null,\n  \"accreditation_body_name\": null,\n  \"accreditation_url\": null,\n  \"country\": null,\n  \"accreditation_proof\": {\n    \"filename\": \"Accreditation - indian institute of technology delhi.pdf\",\n    \"url\": \"{{baseUrl}}/v1/reports/ara_20261125_121042_a34d08/proof.pdf\",\n    \"path\": \"<ARA_DATA_DIR>/reports/ara_20261125_121042_a34d08/Accreditation - indian institute of technology delhi.pdf\",\n    \"sha256\": \"9c7d1812be6adf997a2177848336d1881d30b42e5e5511b9ce68c41c345834d5\",\n    \"size_bytes\": 1491797,\n    \"pages\": 4,\n    \"base64\": null\n  },\n  \"accreditation_citations\": [],\n  \"matched_institution\": null,\n  \"other_listings\": [],\n  \"alternatives\": [],\n  \"routing\": {\n    \"order\": [\n      \"UGC\",\n      \"AICTE\"\n    ],\n    \"technical\": false,\n    \"reason\": \"university name only — UGC lists universities; AICTE also checked\"\n  },\n  \"sources_checked\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Central Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=LZ1FUMk6U2JWGNLvhWfVSA==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Private Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=0wBmFB1Rb4JGVzq9UP/iOg==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Deemed to be Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=UCL6fMspL2LJS89kv++N3A==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    }\n  ],\n  \"name_resolution\": {\n    \"used\": true,\n    \"cached\": true,\n    \"model\": \"gpt-5.4-mini\",\n    \"university_names\": [\n      \"Indian Institute of Technology Delhi\",\n      \"IIT Delhi\",\n      \"IITD\",\n      \"Indian Institute of Technology, Delhi\"\n    ],\n    \"institute_names\": [],\n    \"website\": \"https://home.iitd.ac.in/\",\n    \"state\": \"Delhi\",\n    \"country\": \"India\",\n    \"category\": \"Institute of National Importance\",\n    \"notes\": \"I matched the requester’s name to the UGC-recognized Delhi list entry for Indian Institute of Technology Delhi and confirmed the official IIT Delhi website.\",\n    \"cost_usd\": 0.0\n  },\n  \"warnings\": [],\n  \"query\": {\n    \"university_name\": \"indian institute of technology delhi\",\n    \"institute_name\": null,\n    \"degree\": null,\n    \"state\": null\n  },\n  \"researched_at\": \"2026-11-25T12:10:42+05:30\",\n  \"duration_seconds\": 10.03,\n  \"cost_usd\": 0.0,\n  \"engine_version\": \"1.1.2\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Inline PDF (base64)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('has accreditation fields', () => {",
+                  "  ['accreditation_status','accredited','accreditation_body','accreditation_url','country','accreditation_proof']",
+                  "    .forEach(k => pm.expect(j).to.have.property(k));",
+                  "});",
+                  "pm.environment.set('requestId', j.request_id);",
+                  "pm.collectionVariables.set('requestId', j.request_id);",
+                  "console.log(j.accreditation_status, j.accreditation_body, j.accreditation_proof.url);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"IGNOU\",\n  \"include_pdf_base64\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Also returns the proof PDF inline in `accreditation_proof.base64`."
+          },
+          "response": []
+        },
+        {
+          "name": "Error — missing university_name",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"degree\": \"B.E.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "422 when the mandatory field is missing."
+          },
+          "response": [
+            {
+              "name": "422 — invalid_request",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/accreditation/research",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "accreditation",
+                    "research"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"degree\": \"B.E.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "422 when the mandatory field is missing."
+              },
+              "status": "Error",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_request\",\n  \"detail\": \"university_name: Field required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Error — personal data rejected",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/accreditation/research",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "accreditation",
+                "research"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"university_name\": \"Anna University someone@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Inputs that look like personal data (e-mail, phone, ID numbers, dates of birth) are rejected."
+          },
+          "response": [
+            {
+              "name": "422 — personal data",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/accreditation/research",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "accreditation",
+                    "research"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"university_name\": \"Anna University someone@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Inputs that look like personal data (e-mail, phone, ID numbers, dates of birth) are rejected."
+              },
+              "status": "Error",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_request\",\n  \"detail\": \"'university_name' looks like personal data (e-mail address). This engine accepts public institution information only.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Get saved result",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/reports/{{requestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "reports",
+                "{{requestId}}"
+              ]
+            },
+            "description": "Saved JSON result of an earlier research."
+          },
+          "response": [
+            {
+              "name": "Get saved result",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-API-Key",
+                    "value": "{{apiKey}}",
+                    "description": "Only needed when the server sets ARA_API_KEYS"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v1/reports/{{requestId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v1",
+                    "reports",
+                    "{{requestId}}"
+                  ]
+                },
+                "description": "Saved JSON result of an earlier research."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"ara_20261125_120505_c7850b\",\n  \"accreditation_status\": \"Accredited\",\n  \"accredited\": true,\n  \"accreditation_body\": \"AICTE\",\n  \"accreditation_body_name\": \"All India Council for Technical Education\",\n  \"accreditation_url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n  \"country\": \"India\",\n  \"accreditation_proof\": {\n    \"filename\": \"Accreditation - Anna University.pdf\",\n    \"url\": \"{{baseUrl}}/v1/reports/ara_20261125_120505_c7850b/proof.pdf\",\n    \"path\": \"<ARA_DATA_DIR>/reports/ara_20261125_120505_c7850b/Accreditation - Anna University.pdf\",\n    \"sha256\": \"7f2c90f04b82173d59a7bb832efb5dc6067f92ab4f2000a68e42d68862d8b803\",\n    \"size_bytes\": 2029423,\n    \"pages\": 4,\n    \"base64\": null\n  },\n  \"accreditation_citations\": [\n    {\n      \"title\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf#page=115\"\n    },\n    {\n      \"title\": \"AICTE — Public Notice 2025-26 (approval group Group-2)\",\n      \"url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\"\n    }\n  ],\n  \"matched_institution\": {\n    \"body\": \"AICTE\",\n    \"name\": \"ANNA UNIVERSITY\",\n    \"category\": \"AICTE approved institution\",\n    \"state\": \"Tamil Nadu\",\n    \"details\": {\n      \"sr\": \"5427\",\n      \"aicte_id\": \"1-3687844468\",\n      \"name\": \"ANNA UNIVERSITY\",\n      \"region\": \"Southern\",\n      \"state\": \"Tamil Nadu\",\n      \"district\": \"CHENNAI\",\n      \"city\": \"CITY\",\n      \"group\": \"Group-2\",\n      \"page\": 115,\n      \"approval_group\": {\n        \"group\": \"Group-2\",\n        \"description\": \"Existing institutions / universities running other than BBA / BCA / BMS\",\n        \"regions\": \"Western (WR), Southern (SR), South West (SWR) and South Central (SCR) regions\",\n        \"region\": \"Southern (SR)\",\n        \"region_states\": \"Tamil Nadu, Puducherry\",\n        \"notice_url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\"\n      }\n    },\n    \"match_score\": 100.0,\n    \"match_method\": \"exact\",\n    \"matched_on\": \"Anna University\",\n    \"state_check\": true\n  },\n  \"other_listings\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"Anna University\",\n      \"category\": \"State University\",\n      \"state\": \"Tamil Nadu\",\n      \"details\": {\n        \"ugc_status\": \"2(f) & 12B\",\n        \"website\": \"http://www.annauniv.edu\",\n        \"address\": \"Sardar Patel Road, Guindy, ChennaiGuindyChennai\",\n        \"pin\": \"600025\"\n      },\n      \"match_score\": 100.0,\n      \"match_method\": \"exact\",\n      \"matched_on\": \"Anna University\",\n      \"state_check\": true\n    }\n  ],\n  \"alternatives\": [],\n  \"routing\": {\n    \"order\": [\n      \"AICTE\",\n      \"UGC\"\n    ],\n    \"technical\": true,\n    \"reason\": \"degree 'B.E. Civil Engineering' is a technical/professional programme (B.E) — AICTE approves these programmes\"\n  },\n  \"sources_checked\": [\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Central Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=ddmCMsxJZgXH2S/m0uMOKQ==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=LZ1FUMk6U2JWGNLvhWfVSA==\",\n      \"found\": true,\n      \"result\": \"Listed: Anna University (Tamil Nadu)\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of State Private Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=0wBmFB1Rb4JGVzq9UP/iOg==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"UGC\",\n      \"name\": \"UGC — List of Deemed to be Universities\",\n      \"url\": \"https://www.ugc.gov.in/universitydetails/university?type=UCL6fMspL2LJS89kv++N3A==\",\n      \"found\": false,\n      \"result\": \"Not listed\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Approved institutions 2025-26\",\n      \"url\": \"https://aicte.gov.in/sites/default/files/approval/2025-26/Groupwise-List%20of%20Institutions_compressed.pdf\",\n      \"found\": true,\n      \"result\": \"University: ANNA UNIVERSITY — Sr.No 5427, page 115\"\n    },\n    {\n      \"body\": \"AICTE\",\n      \"name\": \"AICTE — Public Notice 2025-26 (approval groups)\",\n      \"url\": \"https://www.aicte.gov.in/sites/default/files/approval/2025-26/Public%20Notice%202025-26.pdf#page=2\",\n      \"found\": true,\n      \"result\": \"Group-2: Existing institutions / universities running other than BBA / BCA / BMS — Western (WR), Southern (SR), South West (SWR) and South Central (SCR) regions\"\n    }\n  ],\n  \"name_resolution\": null,\n  \"warnings\": [],\n  \"query\": {\n    \"university_name\": \"Anna University\",\n    \"institute_name\": null,\n    \"degree\": \"B.E. Civil Engineering\",\n    \"state\": \"Tamil Nadu\"\n  },\n  \"researched_at\": \"2026-11-25T12:05:05+05:30\",\n  \"duration_seconds\": 14.41,\n  \"cost_usd\": 0.0,\n  \"engine_version\": \"1.1.0\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Download proof PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/reports/{{requestId}}/proof.pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "reports",
+                "{{requestId}}",
+                "proof.pdf"
+              ]
+            },
+            "description": "The proof PDF (application/pdf). In Postman use 'Send and Download' to save it."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('is a PDF', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/pdf'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Download proof PDF (key in query)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/reports/{{requestId}}/proof.pdf?api_key={{apiKey}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "reports",
+                "{{requestId}}",
+                "proof.pdf"
+              ],
+              "query": [
+                {
+                  "key": "api_key",
+                  "value": "{{apiKey}}"
+                }
+              ]
+            },
+            "description": "Same, with the API key as a query parameter (for links / browsers)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sources",
+      "item": [
+        {
+          "name": "Source cache status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/sources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "sources"
+              ]
+            },
+            "description": "UGC lists and AICTE list: record counts, cached-at, download errors."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh sources",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}",
+                "description": "Only needed when the server sets ARA_API_KEYS"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/sources/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "sources",
+                "refresh"
+              ]
+            },
+            "description": "Re-download the UGC lists and the AICTE list and re-index (AICTE indexing ≈2 min when the PDF changed)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Liveness + readiness (`ready` = official lists loaded). No auth."
+      },
+      "response": [
+        {
+          "name": "Health",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Liveness + readiness (`ready` = official lists loaded). No auth."
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"ok\",\n  \"ready\": true,\n  \"engine_version\": \"1.1.2\",\n  \"llm\": true\n}"
+        }
+      ],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

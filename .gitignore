@@ -1,0 +1,33 @@
+# --- secrets / local config ---
+.env
+.env.*
+!.env.example
+
+# --- runtime data (official-list cache, proof PDFs, results, audit log) ---
+data/
+*.log
+logs/
+reports/
+
+# --- tests and dev-only files ---
+tests/
+requirements-dev.txt
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- python / build ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# --- editors / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.claude/
